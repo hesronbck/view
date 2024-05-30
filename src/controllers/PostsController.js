@@ -15,6 +15,13 @@ class PostsController {
     PostsDAO.criar({ title, content, likes: 0 });
     res.redirect('/posts');
   }
+
+  atualizarCurtidas(req, res) {
+    const { id } = req.params;
+    const { likes } = req.body;
+    PostsDAO.atualizarCurtidas(parseInt(id), parseInt(likes));
+    res.status(200).send();
+  }
 }
 
 module.exports = new PostsController();

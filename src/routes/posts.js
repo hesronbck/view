@@ -11,4 +11,7 @@ router.get('/create', postsController.formCreate);
 // Criar um novo post
 router.post('/', postsController.create);
 
+// Atualizar curtidas
+router.post('/:id/like', postsController.atualizarCurtidas);
+
 module.exports = router;

@@ -2,12 +2,39 @@
 <a href="/posts/create">Criar novo post</a>
 <ul>
   {{#each posts}}
-  <li>
+  <li data-id="{{this.id}}">
     <h3>{{this.title}}</h3>
     <p>{{this.content}}</p>
     <div class="post-actions">
-      <span class="likes">{{this.likes}} ❤️</span>
+      <button class="like-button">{{#if this.likes}}❤️{{else}}♡{{/if}}</button>
+      <span class="likes">{{this.likes}}</span>
     </div>
   </li>
   {{/each}}
 </ul>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.like-button').forEach(button => {
+      button.addEventListener('click', () => {
+        const postElement = button.closest('li');
+        const postId = postElement.getAttribute('data-id');
+        const likesElement = postElement.querySelector('.likes');
+        const currentLikes = parseInt(likesElement.textContent);
+
+        const newLikes = button.textContent === '♡' ? currentLikes + 1 : currentLikes - 1;
+
+        fetch(`/posts/${postId}/like`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ likes: newLikes })
+        }).then(() => {
+          likesElement.textContent = newLikes;
+          button.textContent = newLikes > 0 ? '❤️' : '♡';
+        });
+      });
+    });
+  });
+</script>
