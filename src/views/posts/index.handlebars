@@ -1,40 +1,92 @@
-<h2>Posts</h2>
-<a href="/posts/create">Criar novo post</a>
-<ul>
-  {{#each posts}}
-  <li data-id="{{this.id}}">
-    <h3>{{this.title}}</h3>
-    <p>{{this.content}}</p>
-    <div class="post-actions">
-      <button class="like-button">{{#if this.likes}}❤️{{else}}♡{{/if}}</button>
-      <span class="likes">{{this.likes}}</span>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/styles/style.css">
+  <link rel="stylesheet" href="/styles/modal.css">
+  <title>Fórum</title>
+</head>
+<body>
+
+  
+  <div id="posts">
+    <h2>Posts</h2>
+    <a href="#" id="openModal">Criar novo post</a>
+    <ul>
+      {{#each posts}}
+      <li data-id="{{this.id}}">
+        <h3>{{this.title}}</h3>
+        <p>{{this.content}}</p>
+        <div class="post-actions">
+          <button class="like-button">{{#if this.likes}}❤️{{else}}♡{{/if}}</button>
+          <span class="likes">{{this.likes}}</span>
+        </div>
+      </li>
+      {{/each}}
+    </ul>
+  </div>
+
+  <!-- Modal -->
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Criar Novo Post</h2>
+      <form action="/posts/create" method="POST">
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" required>
+        <label for="content">Conteúdo:</label>
+        <textarea id="content" name="content" required></textarea>
+        <button type="submit">Criar</button>
+      </form>
     </div>
-  </li>
-  {{/each}}
-</ul>
+  </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.like-button').forEach(button => {
-      button.addEventListener('click', () => {
-        const postElement = button.closest('li');
-        const postId = postElement.getAttribute('data-id');
-        const likesElement = postElement.querySelector('.likes');
-        const currentLikes = parseInt(likesElement.textContent);
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Modal logica
+      const modal = document.getElementById("myModal");
+      const btn = document.getElementById("openModal");
+      const span = document.getElementsByClassName("close")[0];
 
-        const newLikes = button.textContent === '♡' ? currentLikes + 1 : currentLikes - 1;
+      btn.onclick = function() {
+        modal.style.display = "block";
+      }
 
-        fetch(`/posts/${postId}/like`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ likes: newLikes })
-        }).then(() => {
-          likesElement.textContent = newLikes;
-          button.textContent = newLikes > 0 ? '❤️' : '♡';
+      span.onclick = function() {
+        modal.style.display = "none";
+      }
+
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+
+      // botao de like logica
+      document.querySelectorAll('.like-button').forEach(button => {
+        button.addEventListener('click', () => {
+          const postElement = button.closest('li');
+          const postId = postElement.getAttribute('data-id');
+          const likesElement = postElement.querySelector('.likes');
+          const currentLikes = parseInt(likesElement.textContent);
+
+          const newLikes = button.textContent === '♡' ? currentLikes + 1 : currentLikes - 1;
+
+          fetch(`/posts/${postId}/like`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ likes: newLikes })
+          }).then(() => {
+            likesElement.textContent = newLikes;
+            button.textContent = newLikes > 0 ? '❤️' : '♡';
+          });
         });
       });
     });
-  });
-</script>
+  </script>
+
+</body>
+</html>
