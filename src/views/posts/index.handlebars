@@ -6,86 +6,104 @@
   <link rel="stylesheet" href="/styles/style.css">
   <link rel="stylesheet" href="/styles/modal.css">
   <title>Fórum</title>
+ 
 </head>
 <body>
 
-  
   <div id="posts">
     <h2>Posts</h2>
-    <a href="#" id="openModal">Criar novo post</a>
+    <a href="#" id="openModal">Criar novo produto</a>
     <ul>
       {{#each posts}}
       <li data-id="{{this.id}}">
-        <h3>{{this.title}}</h3>
+        <h3 class="post-title">{{this.title}}</h3>
         <p>{{this.content}}</p>
         <div class="post-actions">
-          <button class="like-button">{{#if this.likes}}❤️{{else}}♡{{/if}}</button>
-          <span class="likes">{{this.likes}}</span>
+          <div class="like-counter">0</div>
+          <button class="like-button">♡</button>
         </div>
       </li>
       {{/each}}
     </ul>
   </div>
 
-  <!-- Modal -->
-  <div id="myModal" class="modal">
+  <!-- Modal para criar novo produto -->
+  <div id="createProductModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
-      <h2>Criar Novo Post</h2>
-      <form action="/posts/create" method="POST">
-        <label for="title">Título:</label>
-        <input type="text" id="title" name="title" required>
-        <label for="content">Conteúdo:</label>
-        <textarea id="content" name="content" required></textarea>
+      <h2>Criar Novo Produto</h2>
+      <form action="/products/create" method="POST">
+        <label for="productName">Nome:</label>
+        <input type="text" id="productName" name="productName" required>
+        <label for="productDescription">Descrição:</label>
+        <textarea id="productDescription" name="productDescription" required></textarea>
         <button type="submit">Criar</button>
       </form>
     </div>
   </div>
 
+  <!-- Modal para visualização de post -->
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Título do produto</h2><br>
+      <h4>Autor:</h4>
+      <h4>Descrição do Produto:</h4>
+      <p id="productDescription"></p>
+    </div>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Modal logica
       const modal = document.getElementById("myModal");
+      const createProductModal = document.getElementById("createProductModal");
       const btn = document.getElementById("openModal");
       const span = document.getElementsByClassName("close")[0];
 
       btn.onclick = function() {
-        modal.style.display = "block";
+        createProductModal.style.display = "block";
       }
 
       span.onclick = function() {
         modal.style.display = "none";
+        createProductModal.style.display = "none";
       }
 
       window.onclick = function(event) {
         if (event.target == modal) {
           modal.style.display = "none";
+        } else if (event.target == createProductModal) {
+          createProductModal.style.display = "none";
         }
       }
 
-      // botao de like logica
-      document.querySelectorAll('.like-button').forEach(button => {
-        button.addEventListener('click', () => {
-          const postElement = button.closest('li');
-          const postId = postElement.getAttribute('data-id');
-          const likesElement = postElement.querySelector('.likes');
-          const currentLikes = parseInt(likesElement.textContent);
-
-          const newLikes = button.textContent === '♡' ? currentLikes + 1 : currentLikes - 1;
-
-          fetch(`/posts/${postId}/like`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ likes: newLikes })
-          }).then(() => {
-            likesElement.textContent = newLikes;
-            button.textContent = newLikes > 0 ? '❤️' : '♡';
-          });
+      document.querySelectorAll('.post-title').forEach(title => {
+        title.addEventListener('click', function() {
+          const productId = this.closest('li').getAttribute('data-id');
+          const productDescription = getProductDescription(productId);
+          document.getElementById('productDescription').textContent = productDescription;
+          modal.style.display = "block";
         });
       });
+
+      document.querySelectorAll('.like-button').forEach(button => {
+  button.addEventListener('click', () => {
+    const postElement = button.closest('li');
+    const likesElement = postElement.querySelector('.like-counter');
+    let currentLikes = parseInt(likesElement.textContent) || 0; // Inicializa com 0 se não houver nenhum valor
+
+    const newLikes = button.textContent === '♡' ? currentLikes + 1 : currentLikes - 1;
+    currentLikes = newLikes;
+
+    likesElement.textContent = currentLikes > 0 ? currentLikes : '0'; // Mostra "0" se não houver curtidas
+    button.textContent = currentLikes > 0 ? `❤️ ${currentLikes}` : '♡';
+  });
+});
     });
+
+    function getProductDescription(productId) {
+      return ;
+    }
   </script>
 
 </body>

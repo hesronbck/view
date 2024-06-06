@@ -8,6 +8,10 @@ body {
     flex-direction: column;
     min-height: 100vh;
   }
+
+  h2{
+    color: black;
+  }
   
   /* Estilo do cabeçalho */
   header {
@@ -120,3 +124,21 @@ body {
     background-color: #0056b3;
   }
   
+  .comments-section {
+    display: none; 
+  }
+
+  .like-counter {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    background-color: #ffffff;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+  }

@@ -43,6 +43,24 @@ router.post('/register', (req, res) => {
   res.redirect('/login');
 });
 
+router.post('/posts/create', (req, res) => {
+  const { title, content } = req.body;
+
+  // Código para criar o post no banco de dados
+  const newPost = {
+    id: generateNewId(), // Função para gerar um novo ID
+    title: title,
+    content: content,
+    likes: 0
+  };
+
+  // Suponha que posts seja um array que armazena os posts
+  router.push(newPost);
+
+  // Retornar os dados do novo post
+  res.status(201).json(newPost);
+});
+
 router.use('/posts', postsRoutes);
 
 

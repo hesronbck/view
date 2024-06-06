@@ -1,8 +1,8 @@
 const Post = require('../Post');
 
 let posts = [
-  new Post({ id: 1, title: 'Primeiro Post', content: 'Este é o primeiro post', likes: 0 }),
-  new Post({ id: 2, title: 'Segundo Post', content: 'Este é o segundo post', likes: 0 }),
+  new Post({ id: 1, title: 'Primeiro Post', likes: 0 }),
+  new Post({ id: 2, title: 'Segundo Post', likes: 0 }),
   // Adicione outros posts aqui
 ];
 
