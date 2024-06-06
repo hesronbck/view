@@ -19,8 +19,8 @@
         <h3 class="post-title">{{this.title}}</h3>
         <p>{{this.content}}</p>
         <div class="post-actions">
-          <div class="like-counter">0</div>
-          <button class="like-button">♡</button>
+          <button class="like-button">{{#if this.likes}}❤️{{else}}♡{{/if}}</button>
+          <span class="likes">{{this.likes}}</span>
         </div>
       </li>
       {{/each}}
@@ -86,24 +86,34 @@
         });
       });
 
-      document.querySelectorAll('.like-button').forEach(button => {
-  button.addEventListener('click', () => {
-    const postElement = button.closest('li');
-    const likesElement = postElement.querySelector('.like-counter');
-    let currentLikes = parseInt(likesElement.textContent) || 0; // Inicializa com 0 se não houver nenhum valor
+        document.querySelectorAll('.like-button').forEach(button => {
+        button.addEventListener('click', () => {
+          const postElement = button.closest('li');
+          const postId = postElement.getAttribute('data-id');
+          const likesElement = postElement.querySelector('.likes');
+          const currentLikes = parseInt(likesElement.textContent);
 
-    const newLikes = button.textContent === '♡' ? currentLikes + 1 : currentLikes - 1;
-    currentLikes = newLikes;
+          const newLikes = button.textContent === '♡' ? currentLikes + 1 : currentLikes - 1;
 
-    likesElement.textContent = currentLikes > 0 ? currentLikes : '0'; // Mostra "0" se não houver curtidas
-    button.textContent = currentLikes > 0 ? `❤️ ${currentLikes}` : '♡';
-  });
-});
+          fetch(`/posts/${postId}/like`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ likes: newLikes })
+          }).then(() => {
+            likesElement.textContent = newLikes;
+            button.textContent = newLikes > 0 ? '❤️' : '♡';
+          });
+        });
+        });
     });
 
     function getProductDescription(productId) {
       return ;
     }
+
+    
   </script>
 
 </body>
