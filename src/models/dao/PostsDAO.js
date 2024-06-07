@@ -1,28 +1,31 @@
-const Post = require('../Post');
+const Postagem = require('../Postagem'); // Importe o modelo da postagem
 
-let posts = [
-  new Post({ id: 1, title: 'Primeiro Post', likes: 0 }),
-  new Post({ id: 2, title: 'Segundo Post', likes: 0 }),
-  // Adicione outros posts aqui
-];
-
-class PostsDAO {
-  listar() {
-    return posts;
-  }
-
-  criar(postData) {
-    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
-    const novoPost = new Post({ id, ...postData });
-    posts.push(novoPost);
-  }
-
-  atualizarCurtidas(id, likes) {
-    const post = posts.find(p => p.id === id);
-    if (post) {
-      post.likes = likes;
+class PostagemDAO {
+    // Cria e persiste uma postagem
+    async create({ idUsuario, titulo, conteudo, dataHora }) {
+        let newPostagem;
+        try {
+            newPostagem = await Postagem.create({ idUsuario, titulo, conteudo, dataHora });
+        } catch (error) {
+            console.error('Erro ao criar postagem:', error);
+        } finally {
+            return newPostagem; // Retorne a postagem criada
+        }
     }
-  }
+
+    // Busca todas as postagens do banco de dados
+    async getAll() {
+        let postagens;
+        try {
+            postagens = await Postagem.findAll();
+        } catch (error) {
+            console.error('Erro ao buscar postagens:', error);
+        } finally {
+            return postagens;
+        }
+    }
+
+    // Implemente outros métodos de acordo com suas necessidades
 }
 
-module.exports = new PostsDAO();
+module.exports = new PostagemDAO();

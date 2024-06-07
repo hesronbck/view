@@ -2,7 +2,7 @@ const PostsDAO = require('../models/dao/PostsDAO');
 
 class PostsController {
   index(req, res) {
-    const posts = PostsDAO.listar();
+    const posts = PostsDAO.getAll();
     res.render('posts/index', { posts });
   }
 

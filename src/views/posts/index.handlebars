@@ -1,26 +1,28 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/styles/style.css">
   <link rel="stylesheet" href="/styles/modal.css">
   <title>Fórum</title>
- 
+
 </head>
+
 <body>
 
-  <div id="posts">
+  <div id="post">
     <h2>Posts</h2>
-    <a href="#" id="openModal">Criar novo produto</a>
+    <a href="#" id="openModal">Criar novo post</a>
     <ul>
       {{#each posts}}
       <li data-id="{{this.id}}">
         <h3 class="post-title">{{this.title}}</h3>
         <p>{{this.content}}</p>
         <div class="post-actions">
-          <button class="like-button">{{#if this.likes}}❤️{{else}}♡{{/if}}</button>
-          <span class="likes">{{this.likes}}</span>
+          <div class="like-counter">0</div>
+          <button class="like-button">♡</button>
         </div>
       </li>
       {{/each}}
@@ -31,7 +33,7 @@
   <div id="createProductModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
-      <h2>Criar Novo Produto</h2>
+      <h2>Criar Novo Post</h2>
       <form action="/products/create" method="POST">
         <label for="productName">Nome:</label>
         <input type="text" id="productName" name="productName" required>
@@ -60,16 +62,16 @@
       const btn = document.getElementById("openModal");
       const span = document.getElementsByClassName("close")[0];
 
-      btn.onclick = function() {
+      btn.onclick = function () {
         createProductModal.style.display = "block";
       }
 
-      span.onclick = function() {
+      span.onclick = function () {
         modal.style.display = "none";
         createProductModal.style.display = "none";
       }
 
-      window.onclick = function(event) {
+      window.onclick = function (event) {
         if (event.target == modal) {
           modal.style.display = "none";
         } else if (event.target == createProductModal) {
@@ -78,7 +80,7 @@
       }
 
       document.querySelectorAll('.post-title').forEach(title => {
-        title.addEventListener('click', function() {
+        title.addEventListener('click', function () {
           const productId = this.closest('li').getAttribute('data-id');
           const productDescription = getProductDescription(productId);
           document.getElementById('productDescription').textContent = productDescription;
@@ -86,35 +88,27 @@
         });
       });
 
-        document.querySelectorAll('.like-button').forEach(button => {
+      document.querySelectorAll('.like-button').forEach(button => {
         button.addEventListener('click', () => {
           const postElement = button.closest('li');
-          const postId = postElement.getAttribute('data-id');
-          const likesElement = postElement.querySelector('.likes');
-          const currentLikes = parseInt(likesElement.textContent);
+          const likesElement = postElement.querySelector('.like-counter');
+          let currentLikes = parseInt(likesElement.textContent) || 0; // Inicializa com 0 se não houver nenhum valor
 
           const newLikes = button.textContent === '♡' ? currentLikes + 1 : currentLikes - 1;
+          currentLikes = newLikes;
 
-          fetch(`/posts/${postId}/like`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ likes: newLikes })
-          }).then(() => {
-            likesElement.textContent = newLikes;
-            button.textContent = newLikes > 0 ? '❤️' : '♡';
-          });
+          likesElement.textContent = currentLikes > 0 ? currentLikes : '0'; // Mostra "0" se não houver curtidas
+          button.textContent = currentLikes > 0 ? `❤️ ${currentLikes}` : '♡';
         });
-        });
+      });
     });
 
     function getProductDescription(productId) {
-      return ;
+      return;
     }
-
-    
   </script>
 
+
 </body>
+
 </html>

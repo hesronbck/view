@@ -9,7 +9,7 @@ router.get('/login', (req, res) => {
 // Rota para processar o login
 router.post('/login', (req, res) => {
   const { username, password } = req.body;
-  
+
   // Implementar a lógica de autenticação aqui
   // Para este exemplo, vamos apenas redirecionar para a página inicial
   if (username === 'admin' && password === 'password') {
