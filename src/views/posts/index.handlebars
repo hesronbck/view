@@ -7,108 +7,131 @@
   <link rel="stylesheet" href="/styles/style.css">
   <link rel="stylesheet" href="/styles/modal.css">
   <title>Fórum</title>
-
 </head>
 
 <body>
 
-  <div id="post">
+  <div id="posts">
     <h2>Posts</h2>
     <a href="#" id="openModal">Criar novo post</a>
     <ul>
-      {{#each posts}}
-      <li data-id="{{this.id}}">
-        <h3 class="post-title">{{this.title}}</h3>
-        <p>{{this.content}}</p>
+      <li data-id="1">
+        <h3 class="post-title">Primeiro Post</h3>
         <div class="post-actions">
-          <div class="like-counter">0</div>
           <button class="like-button">♡</button>
+          <span class="likes">0</span>
         </div>
       </li>
-      {{/each}}
+      <li data-id="2">
+        <h3 class="post-title">Segundo Post</h3>
+
+        <div class="post-actions">
+          <button class="like-button">♡</button>
+          <span class="likes">0</span>
+        </div>
+      </li>
     </ul>
   </div>
 
-  <!-- Modal para criar novo produto -->
-  <div id="createProductModal" class="modal">
+  <!-- Modal para criar novo post -->
+  <div id="createPostModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
       <h2>Criar Novo Post</h2>
-      <form action="/products/create" method="POST">
-        <label for="productName">Nome:</label>
-        <input type="text" id="productName" name="productName" required>
-        <label for="productDescription">Descrição:</label>
-        <textarea id="productDescription" name="productDescription" required></textarea>
+      <form id="createPostForm">
+        <label for="titulo">Título:</label>
+        <input type="text" id="titulo" name="titulo" required>
+        <label for="conteudo">Conteúdo:</label>
+        <textarea id="conteudo" name="conteudo" required></textarea>
         <button type="submit">Criar</button>
       </form>
     </div>
   </div>
 
-  <!-- Modal para visualização de post -->
-  <div id="myModal" class="modal">
+  <!-- Modal para exibir detalhes do post -->
+  <div id="postModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
-      <h2>Título do produto</h2><br>
-      <h4>Autor:</h4>
-      <h4>Descrição do Produto:</h4>
-      <p id="productDescription"></p>
+      <h2 id="postTitle"></h2>
+      <p>Autor: <span id="postAuthor"></span></p>
+      <p>Descrição: <span id="postDescription"></span></p>
+      <p>Comentar:</p>
+      <textarea id="comment" name="comment" rows="4" cols="50"></textarea>
+      <br>
+      <button>🛫</button>
     </div>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const modal = document.getElementById("myModal");
-      const createProductModal = document.getElementById("createProductModal");
+      const createPostModal = document.getElementById("createPostModal");
+      const postModal = document.getElementById("postModal");
       const btn = document.getElementById("openModal");
-      const span = document.getElementsByClassName("close")[0];
+      const span = document.getElementsByClassName("close");
 
       btn.onclick = function () {
-        createProductModal.style.display = "block";
+        createPostModal.style.display = "block";
       }
 
       span.onclick = function () {
-        modal.style.display = "none";
-        createProductModal.style.display = "none";
+        createPostModal.style.display = "none";
+        postModal.style.display = "none";
       }
 
       window.onclick = function (event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
-        } else if (event.target == createProductModal) {
-          createProductModal.style.display = "none";
+        if (event.target == createPostModal) {
+          createPostModal.style.display = "none";
+        }
+        if (event.target == postModal) {
+          postModal.style.display = "none";
         }
       }
 
       document.querySelectorAll('.post-title').forEach(title => {
         title.addEventListener('click', function () {
-          const productId = this.closest('li').getAttribute('data-id');
-          const productDescription = getProductDescription(productId);
-          document.getElementById('productDescription').textContent = productDescription;
-          modal.style.display = "block";
+          const postId = this.closest('li').getAttribute('data-id');
+          const postDetails = getPostDetails(postId);
+          document.getElementById('postTitle').textContent = postDetails.titulo;
+          document.getElementById('postAuthor').textContent = postDetails.autor;
+          document.getElementById('postDescription').textContent = postDetails.descricao;
+          postModal.style.display = "block";
         });
       });
 
       document.querySelectorAll('.like-button').forEach(button => {
         button.addEventListener('click', () => {
           const postElement = button.closest('li');
-          const likesElement = postElement.querySelector('.like-counter');
-          let currentLikes = parseInt(likesElement.textContent) || 0; // Inicializa com 0 se não houver nenhum valor
-
+          const postId = postElement.getAttribute('data-id');
+          const likesElement = postElement.querySelector('.likes');
+          const currentLikes = parseInt(likesElement.textContent);
           const newLikes = button.textContent === '♡' ? currentLikes + 1 : currentLikes - 1;
-          currentLikes = newLikes;
 
-          likesElement.textContent = currentLikes > 0 ? currentLikes : '0'; // Mostra "0" se não houver curtidas
-          button.textContent = currentLikes > 0 ? `❤️ ${currentLikes}` : '♡';
+          fetch(`/posts/${postId}/like`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ likes: newLikes })
+          }).then(() => {
+            likesElement.textContent = newLikes;
+            button.textContent = newLikes > 0 ? '❤️' : '♡';
+          });
         });
       });
     });
 
-    function getProductDescription(productId) {
-      return;
+    function getPostDetails(postId) {
+      // Aqui você pode implementar a lógica para buscar os detalhes do post com o ID especificado
+      // Por enquanto, retornaremos informações fictícias para demonstração
+      if (postId === '1') {
+        return { titulo: 'Primeiro Post', autor: 'Autor do Primeiro Post', descricao: 'Descrição do Primeiro Post' };
+      } else if (postId === '2') {
+        return { titulo: 'Segundo Post', autor: 'Autor do Segundo Post', descricao: 'Descrição do Segundo Post' };
+      }
+      // Retornamos um objeto vazio se o ID do post não for encontrado
+      return {};
     }
   </script>
-
-
 </body>
 
 </html>

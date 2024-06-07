@@ -1,37 +1,22 @@
 const express = require('express');
 const router = express.Router();
 
-// Simulação de banco de dados
 let posts = [
-  { id: 1, titulo: 'Primeiro Post', conteudo: 'Conteúdo do primeiro post', likes: 0 }
+  { id: 1, titulo: 'Primeiro Post', conteudo: 'Conteúdo do primeiro post', likes: 0 },
+  { id: 2, titulo: 'Segundo Post', conteudo: 'Conteúdo do segundo post', likes: 0 }
 ];
 
-// Página principal
-router.get('/', (req, res) => {
-  res.render('index', { posts });
+// Rota para exibir posts
+router.get('/posts', (req, res) => {
+  res.render('home', { posts });
 });
 
-// Página de login
-router.get('/login', (req, res) => {
-  res.render('login');
-});
-
-// Página de registro
-router.get('/register', (req, res) => {
-  res.render('register');
-});
-
-// Criação de posts
-router.post('/posts', (req, res) => {
+// Rota para criar um novo post
+router.post('/posts/create', (req, res) => {
   const { titulo, conteudo } = req.body;
-  const newPost = {
-    id: posts.length + 1,
-    titulo,
-    conteudo,
-    likes: 0
-  };
+  const newPost = { id: posts.length + 1, titulo, conteudo, likes: 0 };
   posts.push(newPost);
-  res.redirect('/');
+  res.json(newPost);
 });
 
 module.exports = router;
