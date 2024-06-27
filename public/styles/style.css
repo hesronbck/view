@@ -139,6 +139,13 @@ body {
     display: none; 
   }
 
+  button {
+    background-color: #161616;
+    text-align: center;
+    align-items: center;
+    display: flex;
+  }
+
   .like-counter {
     position: absolute;
     top: 0;
@@ -178,6 +185,7 @@ body {
     grid-column: 2;
     grid-row: 1;
   }
+
   img {
     max-width: 100%;
     height: auto;
@@ -216,8 +224,5 @@ body {
     grid-column: 2;
     grid-row: 1;
   }
-  img {
-    max-width: 100%;
-    height: auto;
-  }
+
 
