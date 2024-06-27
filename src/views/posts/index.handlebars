@@ -1,137 +1,31 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/styles/style.css">
-  <link rel="stylesheet" href="/styles/modal.css">
-  <title>Fórum</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Concert One">
+  <link rel="stylesheet" href="/public/styles/style.css">
 </head>
-
 <body>
-
-  <div id="posts">
-    <h2>Posts</h2>
-    <a href="#" id="openModal">Criar novo post</a>
-    <ul>
-      <li data-id="1">
-        <h3 class="post-title">Primeiro Post</h3>
-        <div class="post-actions">
-          <button class="like-button">♡</button>
-          <span class="likes">0</span>
-        </div>
-      </li>
-      <li data-id="2">
-        <h3 class="post-title">Segundo Post</h3>
-
-        <div class="post-actions">
-          <button class="like-button">♡</button>
-          <span class="likes">0</span>
-        </div>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Modal para criar novo post -->
-  <div id="createPostModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Criar Novo Post</h2>
-      <form id="createPostForm">
-        <label for="titulo">Título:</label>
-        <input type="text" id="titulo" name="titulo" required>
-        <label for="conteudo">Conteúdo:</label>
-        <textarea id="conteudo" name="conteudo" required></textarea>
-        <button type="submit">Criar</button>
-      </form>
+  <hr>
+  <p class="home">Home</p>
+  <hr>
+  <div class="grid-container">
+    <div class="grid-item item">
+      <img src="/src/views/posts/images/MonteFuji.jpg" alt="Monte Fuji">
+    </div>
+    <div class="grid-item item1">
+      <img src="/src/views/posts/images/Everest.jpg" alt="Everest">
+    </div>
+    <div class="grid-item item">
+      <img src="/src/views/posts/images/AlpesSuiços.jpg" alt="Alpes Suiços">
+    </div>
+    <div class="grid-item">
+      <img src="" alt="Grand Canyon">
+    </div>
+    <div class="grid-item">
+      <img src="img/imagem5.jpg" alt="Imagem 5">
     </div>
   </div>
-
-  <!-- Modal para exibir detalhes do post -->
-  <div id="postModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2 id="postTitle"></h2>
-      <p>Autor: <span id="postAuthor"></span></p>
-      <p>Descrição: <span id="postDescription"></span></p>
-      <p>Comentar:</p>
-      <textarea id="comment" name="comment" rows="4" cols="50"></textarea>
-      <br>
-      <button>🛫</button>
-    </div>
-  </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const createPostModal = document.getElementById("createPostModal");
-      const postModal = document.getElementById("postModal");
-      const btn = document.getElementById("openModal");
-      const span = document.getElementsByClassName("close");
-
-      btn.onclick = function () {
-        createPostModal.style.display = "block";
-      }
-
-      span.onclick = function () {
-        createPostModal.style.display = "none";
-        postModal.style.display = "none";
-      }
-
-      window.onclick = function (event) {
-        if (event.target == createPostModal) {
-          createPostModal.style.display = "none";
-        }
-        if (event.target == postModal) {
-          postModal.style.display = "none";
-        }
-      }
-
-      document.querySelectorAll('.post-title').forEach(title => {
-        title.addEventListener('click', function () {
-          const postId = this.closest('li').getAttribute('data-id');
-          const postDetails = getPostDetails(postId);
-          document.getElementById('postTitle').textContent = postDetails.titulo;
-          document.getElementById('postAuthor').textContent = postDetails.autor;
-          document.getElementById('postDescription').textContent = postDetails.descricao;
-          postModal.style.display = "block";
-        });
-      });
-
-      document.querySelectorAll('.like-button').forEach(button => {
-        button.addEventListener('click', () => {
-          const postElement = button.closest('li');
-          const postId = postElement.getAttribute('data-id');
-          const likesElement = postElement.querySelector('.likes');
-          const currentLikes = parseInt(likesElement.textContent);
-          const newLikes = button.textContent === '♡' ? currentLikes + 1 : currentLikes - 1;
-
-          fetch(`/posts/${postId}/like`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ likes: newLikes })
-          }).then(() => {
-            likesElement.textContent = newLikes;
-            button.textContent = newLikes > 0 ? '❤️' : '♡';
-          });
-        });
-      });
-    });
-
-    function getPostDetails(postId) {
-      // Aqui você pode implementar a lógica para buscar os detalhes do post com o ID especificado
-      // Por enquanto, retornaremos informações fictícias para demonstração
-      if (postId === '1') {
-        return { titulo: 'Primeiro Post', autor: 'Autor do Primeiro Post', descricao: 'Descrição do Primeiro Post' };
-      } else if (postId === '2') {
-        return { titulo: 'Segundo Post', autor: 'Autor do Segundo Post', descricao: 'Descrição do Segundo Post' };
-      }
-      // Retornamos um objeto vazio se o ID do post não for encontrado
-      return {};
-    }
-  </script>
 </body>
-
 </html>
